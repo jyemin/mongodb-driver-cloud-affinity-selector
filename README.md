@@ -1,8 +1,8 @@
 # MongoDB Driver Cloud Affinity Selector
 
-A custom server selector and topology listener for MongoDB drivers that routes
-application traffic to mongos routers co-located in the same cloud provider and
-region as the application server.
+A custom server selector and topology listener for the MongoDB Python driver 
+that routes application traffic to mongos routers co-located in the same cloud 
+provider and region as the application server.
 
 ## The Problem
 
