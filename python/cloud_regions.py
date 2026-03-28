@@ -1,0 +1,160 @@
+"""
+cloud_regions.py
+================
+Lookup table mapping (cloud_provider, native_region) → Atlas region identifier.
+
+Cloud metadata endpoints return provider-native region names (e.g. "us-west1"
+on GCP, "us-east-1" on AWS, "eastus" on Azure). Atlas replica-set tags use a
+different identifier scheme (e.g. "WESTERN_US", "US_EAST_1", "US_EAST"). These
+have no consistent syntactic relationship across providers, so a lookup table is
+required.
+
+Keys are (provider_uppercase, cloud_native_region); values are the Atlas region
+identifiers that Atlas injects into the "region" tag of hello responses on
+mongod nodes.
+
+Add or remove regions from the lookup table as required by your application.
+
+Source: MongoDB Atlas cloud provider region documentation.
+"""
+
+CLOUD_REGION_TO_ATLAS: dict[tuple[str, str], str] = {
+    # --- AWS ---
+    ("AWS", "us-east-1"):      "US_EAST_1",
+    ("AWS", "us-east-2"):      "US_EAST_2",
+    ("AWS", "us-west-1"):      "US_WEST_1",
+    ("AWS", "us-west-2"):      "US_WEST_2",
+    ("AWS", "ca-central-1"):   "CA_CENTRAL_1",
+    ("AWS", "ca-west-1"):      "CA_WEST_1",
+    ("AWS", "mx-central-1"):   "MX_CENTRAL_1",
+    ("AWS", "sa-east-1"):      "SA_EAST_1",
+    ("AWS", "eu-west-1"):      "EU_WEST_1",
+    ("AWS", "eu-west-2"):      "EU_WEST_2",
+    ("AWS", "eu-west-3"):      "EU_WEST_3",
+    ("AWS", "eu-central-1"):   "EU_CENTRAL_1",
+    ("AWS", "eu-central-2"):   "EU_CENTRAL_2",
+    ("AWS", "eu-north-1"):     "EU_NORTH_1",
+    ("AWS", "eu-south-1"):     "EU_SOUTH_1",
+    ("AWS", "eu-south-2"):     "EU_SOUTH_2",
+    ("AWS", "me-south-1"):     "ME_SOUTH_1",
+    ("AWS", "me-central-1"):   "ME_CENTRAL_1",
+    ("AWS", "il-central-1"):   "IL_CENTRAL_1",
+    ("AWS", "af-south-1"):     "AF_SOUTH_1",
+    ("AWS", "ap-east-1"):      "AP_EAST_1",
+    ("AWS", "ap-east-2"):      "AP_EAST_2",
+    ("AWS", "ap-south-1"):     "AP_SOUTH_1",
+    ("AWS", "ap-south-2"):     "AP_SOUTH_2",
+    ("AWS", "ap-northeast-1"): "AP_NORTHEAST_1",
+    ("AWS", "ap-northeast-2"): "AP_NORTHEAST_2",
+    ("AWS", "ap-northeast-3"): "AP_NORTHEAST_3",
+    ("AWS", "ap-southeast-1"): "AP_SOUTHEAST_1",
+    ("AWS", "ap-southeast-2"): "AP_SOUTHEAST_2",
+    ("AWS", "ap-southeast-3"): "AP_SOUTHEAST_3",
+    ("AWS", "ap-southeast-4"): "AP_SOUTHEAST_4",
+    ("AWS", "ap-southeast-5"): "AP_SOUTHEAST_5",
+    ("AWS", "ap-southeast-6"): "AP_SOUTHEAST_6",
+    ("AWS", "ap-southeast-7"): "AP_SOUTHEAST_7",
+
+    # --- GCP ---
+    # GCP region names bear no consistent syntactic relationship to Atlas
+    # identifiers (e.g. "us-west1" → "WESTERN_US", "us-central1" → "CENTRAL_US").
+    ("GCP", "us-central1"):               "CENTRAL_US",
+    ("GCP", "us-east1"):                  "US_EAST_1",
+    ("GCP", "us-east4"):                  "US_EAST_4",
+    ("GCP", "us-east5"):                  "US_EAST_5",
+    ("GCP", "us-south1"):                 "US_SOUTH_1",
+    ("GCP", "us-west1"):                  "WESTERN_US",
+    ("GCP", "us-west2"):                  "US_WEST_2",
+    ("GCP", "us-west3"):                  "US_WEST_3",
+    ("GCP", "us-west4"):                  "US_WEST_4",
+    ("GCP", "northamerica-northeast1"):   "NORTH_AMERICA_NORTHEAST_1",
+    ("GCP", "northamerica-northeast2"):   "NORTH_AMERICA_NORTHEAST_2",
+    ("GCP", "northamerica-south1"):       "NORTH_AMERICA_SOUTH_1",
+    ("GCP", "southamerica-east1"):        "SOUTH_AMERICA_EAST_1",
+    ("GCP", "southamerica-west1"):        "SOUTH_AMERICA_WEST_1",
+    ("GCP", "europe-west1"):              "WESTERN_EUROPE",
+    ("GCP", "europe-west2"):              "EUROPE_WEST_2",
+    ("GCP", "europe-west3"):              "EUROPE_WEST_3",
+    ("GCP", "europe-west4"):              "EUROPE_WEST_4",
+    ("GCP", "europe-west6"):              "EUROPE_WEST_6",
+    ("GCP", "europe-west8"):              "EUROPE_WEST_8",
+    ("GCP", "europe-west9"):              "EUROPE_WEST_9",
+    ("GCP", "europe-west10"):             "EUROPE_WEST_10",
+    ("GCP", "europe-west12"):             "EUROPE_WEST_12",
+    ("GCP", "europe-north1"):             "EUROPE_NORTH_1",
+    ("GCP", "europe-central2"):           "EUROPE_CENTRAL_2",
+    ("GCP", "europe-southwest1"):         "EUROPE_SOUTHWEST_1",
+    ("GCP", "asia-east1"):                "EASTERN_ASIA_PACIFIC",
+    ("GCP", "asia-east2"):                "ASIA_EAST_2",
+    ("GCP", "asia-northeast1"):           "NORTHEASTERN_ASIA_PACIFIC",
+    ("GCP", "asia-northeast2"):           "ASIA_NORTHEAST_2",
+    ("GCP", "asia-northeast3"):           "ASIA_NORTHEAST_3",
+    ("GCP", "asia-southeast1"):           "SOUTHEASTERN_ASIA_PACIFIC",
+    ("GCP", "asia-southeast2"):           "ASIA_SOUTHEAST_2",
+    ("GCP", "asia-south1"):               "ASIA_SOUTH_1",
+    ("GCP", "asia-south2"):               "ASIA_SOUTH_2",
+    ("GCP", "australia-southeast1"):      "AUSTRALIA_SOUTHEAST_1",
+    ("GCP", "australia-southeast2"):      "AUSTRALIA_SOUTHEAST_2",
+    ("GCP", "me-west1"):                  "MIDDLE_EAST_WEST_1",
+    ("GCP", "me-central1"):               "MIDDLE_EAST_CENTRAL_1",
+    ("GCP", "me-central2"):               "MIDDLE_EAST_CENTRAL_2",
+    ("GCP", "africa-south1"):             "AFRICA_SOUTH_1",
+
+    # --- Azure ---
+    # Azure region names are also non-syntactic relative to Atlas identifiers
+    # (e.g. "eastus" → "US_EAST", "westeurope" → "EUROPE_WEST").
+    ("AZURE", "centralus"):          "US_CENTRAL",
+    ("AZURE", "eastus"):             "US_EAST",
+    ("AZURE", "eastus2"):            "US_EAST_2",
+    ("AZURE", "westus"):             "US_WEST",
+    ("AZURE", "westus2"):            "US_WEST_2",
+    ("AZURE", "westus3"):            "US_WEST_3",
+    ("AZURE", "northcentralus"):     "US_NORTH_CENTRAL",
+    ("AZURE", "southcentralus"):     "US_SOUTH_CENTRAL",
+    ("AZURE", "westcentralus"):      "US_WEST_CENTRAL",
+    ("AZURE", "canadacentral"):      "CANADA_CENTRAL",
+    ("AZURE", "canadaeast"):         "CANADA_EAST",
+    ("AZURE", "brazilsouth"):        "BRAZIL_SOUTH",
+    ("AZURE", "brazilsoutheast"):    "BRAZIL_SOUTHEAST",
+    ("AZURE", "chilecentral"):       "CHILE_CENTRAL",
+    ("AZURE", "mexicocentral"):      "MEXICO_CENTRAL",
+    ("AZURE", "northeurope"):        "EUROPE_NORTH",
+    ("AZURE", "westeurope"):         "EUROPE_WEST",
+    ("AZURE", "uksouth"):            "UK_SOUTH",
+    ("AZURE", "ukwest"):             "UK_WEST",
+    ("AZURE", "francecentral"):      "FRANCE_CENTRAL",
+    ("AZURE", "francesouth"):        "FRANCE_SOUTH",
+    ("AZURE", "italynorth"):         "ITALY_NORTH",
+    ("AZURE", "germanywestcentral"): "GERMANY_WEST_CENTRAL",
+    ("AZURE", "germanynorth"):       "GERMANY_NORTH",
+    ("AZURE", "polandcentral"):      "POLAND_CENTRAL",
+    ("AZURE", "switzerlandnorth"):   "SWITZERLAND_NORTH",
+    ("AZURE", "switzerlandwest"):    "SWITZERLAND_WEST",
+    ("AZURE", "norwayeast"):         "NORWAY_EAST",
+    ("AZURE", "norwaywest"):         "NORWAY_WEST",
+    ("AZURE", "swedencentral"):      "SWEDEN_CENTRAL",
+    ("AZURE", "swedensouth"):        "SWEDEN_SOUTH",
+    ("AZURE", "spaincentral"):       "SPAIN_CENTRAL",
+    ("AZURE", "eastasia"):           "ASIA_EAST",
+    ("AZURE", "southeastasia"):      "ASIA_SOUTH_EAST",
+    ("AZURE", "australiacentral"):   "AUSTRALIA_CENTRAL",
+    ("AZURE", "australiacentral2"):  "AUSTRALIA_CENTRAL_2",
+    ("AZURE", "australiaeast"):      "AUSTRALIA_EAST",
+    ("AZURE", "australiasoutheast"): "AUSTRALIA_SOUTH_EAST",
+    ("AZURE", "centralindia"):       "INDIA_CENTRAL",
+    ("AZURE", "southindia"):         "INDIA_SOUTH",
+    ("AZURE", "westindia"):          "INDIA_WEST",
+    ("AZURE", "indonesiacentral"):   "INDONESIA_CENTRAL",
+    ("AZURE", "japaneast"):          "JAPAN_EAST",
+    ("AZURE", "japanwest"):          "JAPAN_WEST",
+    ("AZURE", "koreacentral"):       "KOREA_CENTRAL",
+    ("AZURE", "koreasouth"):         "KOREA_SOUTH",
+    ("AZURE", "malaysiawest"):       "MALAYSIA_WEST",
+    ("AZURE", "newzealandnorth"):    "NEWZEALAND_NORTH",
+    ("AZURE", "southafricanorth"):   "SOUTH_AFRICA_NORTH",
+    ("AZURE", "southafricawest"):    "SOUTH_AFRICA_WEST",
+    ("AZURE", "uaenorth"):           "UAE_NORTH",
+    ("AZURE", "uaecentral"):         "UAE_CENTRAL",
+    ("AZURE", "qatarcentral"):       "QATAR_CENTRAL",
+    ("AZURE", "israelcentral"):      "ISRAEL_CENTRAL",
+}
