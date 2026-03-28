@@ -60,5 +60,15 @@ with CloudAffinityManager() as manager:
     # all operations now prefer same-cloud, same-region mongos routers
 ```
 
+### Configuration
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `local_cloud` | `"auto"` | Cloud provider the app is running in: `"AWS"`, `"GCP"`, `"AZURE"`, `"auto"` (detect from instance metadata), or `None` (disable affinity). |
+| `local_region` | `"auto"` | Cloud-native region name (e.g. `"us-east-1"`, `"us-west1"`, `"eastus"`), `"auto"` (detect from instance metadata), or `None` (cloud affinity only, no region preference). Ignored if `local_cloud` is `None`. |
+| `mongod_port` | `27017` | Port of the mongod co-located with each mongos on the same host. |
+| `max_fetch_workers` | `4` | Maximum background threads for mongod tag probes. One probe fires per discovered mongos. |
+| `probe_timeout_ms` | `3000` | Timeout in milliseconds for each mongod probe (connect + hello + close). |
+
 See [`python/example.py`](python/example.py) for a runnable demo with full
 logging and CLI arguments.
