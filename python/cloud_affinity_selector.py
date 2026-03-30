@@ -91,7 +91,6 @@ REQUIREMENTS
 ------------
   Python 3.9+
   pip install pymongo
-  (No other dependencies — stdlib only for HTTP calls)
 """
 
 import logging
