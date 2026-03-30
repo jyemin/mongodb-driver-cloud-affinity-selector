@@ -75,7 +75,7 @@ KNOWN LIMITATIONS
   host (port 27016) is an Atlas internal convention, not a documented stable
   contract.
 
-- The cloud-to-Atlas region lookup table (_CLOUD_REGION_TO_ATLAS) was built
+- The cloud-to-Atlas region lookup table (CLOUD_REGION_TO_ATLAS) was built
   from Atlas documentation at the time of writing. If Atlas adds new regions
   or changes identifiers, the table may need updating. An unknown cloud region
   causes region affinity to be skipped (cloud affinity still applies).
