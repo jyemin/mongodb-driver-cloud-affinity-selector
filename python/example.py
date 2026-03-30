@@ -35,6 +35,8 @@ def _parse_cloud(value: str) -> Optional[str]:
 def _parse_region(value: str) -> Optional[str]:
     if value.lower() == "none":
         return None
+    if value.lower() == "auto":
+        return "auto"
     return value  # "auto" or a native region name like "us-west-1"
 
 
